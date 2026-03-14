@@ -59,7 +59,7 @@ Proyek ini bersifat edukatif dan eksploratif dalam mempelajari pengolahan SVG in
 ## 👨‍💻 Pengembang
 
 Dikembangkan oleh:  
-**Muhammad Hilmi Mu'afa** 
-**Mochamad Danu Syarifudin**
-**Sakha Aryastya Wahyudi** 
+**Muhammad Hilmi Mu'afa**, 
+**Mochamad Danu Syarifudin**, 
+**Sakha Aryastya Wahyudi**.  
 SMK Telkom Sidoarjo
