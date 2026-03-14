@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuis Nusantara - NusaConnect</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================
+       1. VARIABLES & THEME
+    ========================= */
+    :root {
+      --color-bg-paper: #FBF8F1;
+      --color-text-dark: #2D2A26;
+      --color-text-muted: #6B665F;
+      
+      /* Emas Nusantara */
+      --gold-primary: #C5A059;
+      --gold-light: #E6C785;
+      --gold-dark: #94723D;
+      --gold-gradient: linear-gradient(135deg, var(--gold-primary), var(--gold-light), var(--gold-primary));
+      --gold-shadow: 0 10px 30px -10px rgba(197, 160, 89, 0.4);
+
+      --font-serif: 'Playfair Display', serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      
+      --batik-pattern: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 30c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10-10-4.477-10-10zm0 0c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10 10 4.477 10 10zm0-30c5.523 0 10 4.477 10 10s-4.477 10-10 10-10-4.477-10-10 4.477-10 10-10zm0 60c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10z' fill='%23C5A059' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    body { 
+      background-color: var(--color-bg-paper);
+      background-image: radial-gradient(var(--gold-primary) 0.5px, transparent 0.5px), var(--batik-pattern);
+      background-size: 24px 24px, 120px 120px;
+      min-height: 100vh; 
+      /* Padding top ditambah agar konten tidak tertutup navbar sticky */
+      padding-top: 120px; 
+      font-family: var(--font-sans);
+      color: var(--color-text-dark);
+      overflow-x: hidden;
+    }
+    
+    h1, h2, h3, h4 { font-family: var(--font-serif); }
+
+    /* =========================
+       2. NAVBAR (STICKY & RESPONSIVE)
+    ========================= */
+    .navbar {
+      position: fixed; /* STICKY */
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 1200px;
+      z-index: 1000;
+      /* Default state: Glassmorphism */
+      background: rgba(251, 248, 241, 0.85); 
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      border-radius: 50px;
+      padding: 12px 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* === SCROLLED STATE === */
+    .navbar.scrolled {
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+        background: rgba(251, 248, 241, 0.98); /* Solid Cream */
+        border: none;
+        border-bottom: 1px solid var(--gold-primary);
+        padding: 15px 30px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+      font-size: 1.4rem;
+      font-family: var(--font-serif);
+      font-weight: 800;
+      color: var(--color-text-dark) !important;
+      letter-spacing: 1px;
+      z-index: 102;
+      position: relative;
+    }
+
+    /* Hamburger Icon */
+    .hamburger {
+        display: none;
+        cursor: pointer;
+        width: 30px;
+        height: 20px;
+        position: relative;
+        z-index: 102;
+    }
+
+    .hamburger span {
+        display: block;
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background: var(--color-text-dark);
+        border-radius: 9px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: .25s ease-in-out;
+    }
+
+    .hamburger span:nth-child(1) { top: 0px; }
+    .hamburger span:nth-child(2) { top: 8px; }
+    .hamburger span:nth-child(3) { top: 16px; }
+
+    /* Hamburger Active Animation */
+    .hamburger.active span:nth-child(1) { top: 8px; transform: rotate(135deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; left: -60px; }
+    .hamburger.active span:nth-child(3) { top: 8px; transform: rotate(-135deg); }
+
+    /* Custom Link Style */
+    .nav-link-custom {
+      color: var(--color-text-dark) !important;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 8px 20px;
+      border: 1px solid var(--gold-primary);
+      border-radius: 30px;
+      transition: all 0.3s;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .nav-link-custom:hover {
+      background: var(--gold-primary);
+      color: #fff !important;
+    }
+
+    /* Mobile Links */
+    .nav-link-mobile {
+        color: var(--color-text-dark);
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        display: block;
+        text-align: center;
+        font-size: 1.1rem;
+        text-decoration: none;
+    }
+
+    .nav-menu-wrapper {
+        display: flex;
+        align-items: center;
+    }
+
+    /* ===== MOBILE RESPONSIVE LOGIC ===== */
+    @media (max-width: 991px) {
+        .navbar {
+            padding: 10px 20px;
+            width: 95%;
+        }
+        
+        .navbar.scrolled {
+            padding: 15px 20px;
+        }
+
+        .hamburger { display: block; }
+
+        /* Dropdown Menu */
+        .nav-menu-wrapper {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(251, 248, 241, 0.98);
+            border-radius: 20px;
+            margin-top: 10px;
+            padding: 30px 20px;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .navbar.scrolled .nav-menu-wrapper {
+            margin-top: 0;
+            border-radius: 0 0 20px 20px;
+            border-top: none;
+        }
+
+        .nav-menu-wrapper.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .nav-link-custom {
+            width: 100%;
+            text-align: center;
+        }
+    }
+
+    /* =========================
+       3. LAYOUT & CARDS
+    ========================= */
+    .quiz-container-compact { max-width: 1000px; margin: 0 auto; position: relative; z-index: 2; }
+    
+    .quiz-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+      border: 1px solid rgba(197, 160, 89, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .quiz-card::before {
+        content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+        background: var(--gold-gradient);
+    }
+
+    /* =========================
+       4. START SCREEN
+    ========================= */
+    #start-screen { min-height: 60vh; display: flex; align-items: center; }
+    
+    .quiz-title { font-size: 3rem; font-weight: 800; color: var(--color-text-dark); margin-bottom: 15px; }
+    .quiz-subtitle { font-size: 1.1rem; color: var(--color-text-muted); line-height: 1.6; max-width: 600px; margin: 0 auto; }
+
+    .btn-gold {
+        background: var(--gold-gradient);
+        color: #fff; border: none;
+        padding: 15px 50px; border-radius: 50px;
+        font-weight: 700; letter-spacing: 1px;
+        box-shadow: var(--gold-shadow);
+        transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(197, 160, 89, 0.6); color: #fff; }
+
+    /* =========================
+       5. MAIN QUIZ AREA
+    ========================= */
+    .progress-track {
+        background: #f0f0f0; height: 8px; border-radius: 10px; overflow: hidden; margin-bottom: 30px;
+    }
+    .progress-fill {
+        background: var(--gold-gradient); height: 100%; width: 0%; transition: width 0.5s ease;
+    }
+
+    .question-badge {
+        display: inline-block; padding: 5px 15px; background: rgba(197, 160, 89, 0.1); 
+        color: var(--gold-dark); border-radius: 20px; font-weight: 700; font-size: 0.85rem; margin-bottom: 15px;
+        text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .question-text { font-size: 1.4rem; font-weight: 700; margin-bottom: 30px; line-height: 1.4; }
+
+    /* Options Styling */
+    .option-box {
+        border: 2px solid #edf2f7; border-radius: 12px;
+        padding: 15px 20px; margin-bottom: 15px;
+        cursor: pointer; transition: all 0.2s ease;
+        display: flex; align-items: center;
+        background: #fff;
+    }
+    .option-box:hover { border-color: var(--gold-light); background: #fffdf5; transform: translateX(5px); }
+    
+    .option-box.selected {
+        border-color: var(--gold-primary);
+        background: rgba(197, 160, 89, 0.08);
+    }
+
+    .option-prefix {
+        width: 36px; height: 36px;
+        background: #f1f5f9; border-radius: 8px;
+        display: flex; align-items: center; justify-content: center;
+        margin-right: 15px; font-weight: 800; font-size: 1rem; color: #64748b;
+        transition: 0.2s;
+    }
+    .option-box.selected .option-prefix {
+        background: var(--gold-primary); color: white;
+    }
+
+    /* Buttons */
+    .btn-nav-outline {
+        border: 2px solid #e2e8f0; color: #64748b; font-weight: 700;
+        padding: 10px 25px; border-radius: 30px; transition: 0.3s;
+    }
+    .btn-nav-outline:hover { background: #f8fafc; color: #334155; }
+
+    /* =========================
+       6. SIDEBAR (Soal List)
+    ========================= */
+    .sidebar-card {
+        background: #fff; border-radius: 16px; padding: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid rgba(197, 160, 89, 0.2);
+        position: sticky; top: 100px;
+    }
+
+    .q-status-grid {
+        display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px;
+    }
+    .q-status-item {
+        aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+        border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+        background: #f8fafc; color: #94a3b8; border: 1px solid transparent;
+        transition: all 0.2s;
+    }
+    .q-status-item:hover { background: #e2e8f0; }
+    
+    .q-status-item.active { 
+        border: 2px solid var(--gold-primary); background: #fff; color: var(--gold-dark); 
+    }
+    .q-status-item.answered { 
+        background: var(--gold-primary); color: #fff; 
+    }
+
+    /* =========================
+       7. RESULT SCREEN
+    ========================= */
+    .score-circle {
+        width: 150px; height: 150px; margin: 0 auto 30px;
+        border-radius: 50%;
+        background: #fff;
+        border: 6px solid #f1f5f9;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        position: relative;
+    }
+    .score-circle.high-score { border-color: var(--gold-primary); }
+
+    .score-number { font-size: 3.5rem; font-weight: 800; font-family: var(--font-serif); color: var(--color-text-dark); line-height: 1; }
+    .score-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-muted); }
+
+    /* Animation Utilities */
+    .fade-in-up { animation: fadeInUp 0.5s ease forwards; opacity: 0; transform: translateY(20px); }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+    .d-none { display: none !important; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container-fluid justify-content-between px-4 position-relative">
+      <a class="navbar-brand" href="index.html">NusaConnect</a>
+      
+      <div class="hamburger" onclick="toggleMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+      </div>
+
+      <div class="nav-menu-wrapper" id="navMenu">
+        
+        <a href="index.html" class="nav-link-mobile d-lg-none">Beranda</a>
+        <a href="explore.html" class="nav-link-mobile d-lg-none">Jelajah</a>
+
+        <a class="nav-link-custom" href="index.html">
+          <i class="bi bi-house me-2"></i> Kembali ke Home
+        </a>
+      </div>
+    </div>
+</nav>
+
+<div class="container quiz-container-compact mb-5">
+    
+    <div id="start-screen" class="row justify-content-center fade-in-up">
+        <div class="col-md-9 text-center">
+            <div class="quiz-card text-center py-5">
+                <span class="question-badge mb-3">Tantangan Wawasan</span>
+                <h1 class="quiz-title">Cerdas Nusantara</h1>
+                <p class="quiz-subtitle mb-5">
+                    Uji sejauh mana pengetahuanmu tentang kekayaan budaya Indonesia. 
+                    Mulai dari tarian, kuliner, hingga rumah adat. Apakah kamu ahlinya?
+                </p>
+                
+                <div class="d-flex justify-content-center gap-4 text-start d-inline-flex mb-5 text-muted small">
+                    <div><i class="bi bi-card-list me-2 text-gold"></i> 10 Pertanyaan</div>
+                    <div><i class="bi bi-clock-history me-2 text-gold"></i> Santai (No Timer)</div>
+                </div>
+                <br>
+
+                <button onclick="startQuiz()" class="btn-gold">
+                    MULAI KUIS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-quiz-container" class="row g-4 d-none">
+        
+        <div class="col-lg-8">
+            <div class="quiz-card fade-in-up" id="question-card">
+                <div class="d-flex justify-content-between align-items-end mb-2">
+                    <span class="small fw-bold text-muted">PROGRESS</span>
+                    <span id="progress-text" class="small fw-bold" style="color:var(--gold-dark)">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div id="main-progress-bar" class="progress-fill"></div>
+                </div>
+
+                <div id="quiz-content">
+                    <span class="question-badge" id="display-question-number">Soal 1/10</span>
+                    <h2 id="question-text" class="question-text">...</h2>
+                    
+                    <div id="options-container">
+                        </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-5 pt-3 border-top">
+                    <button id="prev-btn" class="btn-nav-outline" onclick="goBack()" style="visibility: hidden;">
+                        <i class="bi bi-arrow-left"></i>
+                    </button>
+                    <button id="next-btn" class="btn-gold px-4 py-2" onclick="goNext()" style="border-radius:30px; padding:10px 30px;">
+                        Selanjutnya <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sidebar-card fade-in-up" style="animation-delay: 0.1s;">
+                <h6 class="fw-bold mb-3 text-uppercase small text-muted border-bottom pb-2">Navigasi Soal</h6>
+                <div id="questions-status-grid" class="q-status-grid">
+                    </div>
+                
+                <div class="mt-4 pt-3 border-top text-center">
+                    <button onclick="finishQuiz()" class="btn btn-outline-danger btn-sm w-100 rounded-pill fw-bold">
+                        Akhiri Kuis
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-section" class="row justify-content-center d-none">
+        <div class="col-md-6 text-center">
+            <div class="quiz-card py-5 fade-in-up">
+                <div class="score-circle high-score mb-4">
+                    <span class="score-number" id="final-score">0</span>
+                    <span class="score-label">Skor Akhir</span>
+                </div>
+                
+                <h2 class="quiz-title" style="font-size:2rem;">Luar Biasa!</h2>
+                <p class="text-muted mb-4 px-4">
+                    Kamu berhasil menjawab <strong id="correct-count" style="color:var(--gold-dark)">0</strong> 
+                    dari 10 pertanyaan dengan benar. Teruslah mencintai budaya kita!
+                </p>
+
+                <div class="d-flex justify-content-center gap-3">
+                    <button onclick="location.reload()" class="btn-gold py-2 px-4" style="font-size:0.9rem;">
+                        <i class="bi bi-arrow-repeat me-2"></i> Ulangi
+                    </button>
+                    <a href="index.html" class="btn-nav-outline py-2 px-4 text-decoration-none" style="font-size:0.9rem;">
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. FUNGSI TOGGLE MENU MOBILE
+    function toggleMenu() {
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.getElementById('navMenu');
+        
+        hamburger.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    }
+
+    // 2. NAVBAR STICKY LOGIC
+    window.addEventListener('scroll', () => {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // 3. QUIZ LOGIC
+    const questionsDB = [
+        {
+            question: "Rumah adat 'Gadang' berasal dari provinsi mana?",
+            options: ["Sumatera Utara", "Sumatera Barat", "Riau", "Jambi"],
+            answer: 1 
+        },
+        {
+            question: "Alat musik 'Sasando' berasal dari daerah...",
+            options: ["Nusa Tenggara Timur", "Maluku", "Papua", "Sulawesi Selatan"],
+            answer: 0
+        },
+        {
+            question: "Tari Kecak yang terkenal tidak menggunakan alat musik berasal dari...",
+            options: ["Jawa Timur", "Bali", "Lombok", "Yogyakarta"],
+            answer: 1
+        },
+        {
+            question: "Makanan khas 'Papeda' terbuat dari bahan dasar apa?",
+            options: ["Beras", "Jagung", "Sagu", "Singkong"],
+            answer: 2
+        },
+        {
+            question: "Senjata tradisional khas Jawa Barat adalah...",
+            options: ["Keris", "Kujang", "Rencong", "Badik"],
+            answer: 1
+        },
+        {
+            question: "Upacara 'Ngaben' merupakan tradisi pembakaran mayat di...",
+            options: ["Toraja", "Bali", "Kalimantan", "Sumatera"],
+            answer: 1
+        },
+        {
+            question: "Kain tenun 'Ulos' merupakan ciri khas dari suku...",
+            options: ["Batak", "Minang", "Dayak", "Asmat"],
+            answer: 0
+        },
+        {
+            question: "Danau Toba terletak di provinsi...",
+            options: ["Sumatera Barat", "Sumatera Utara", "Aceh", "Lampung"],
+            answer: 1
+        },
+        {
+            question: "Provinsi manakah yang dijuluki 'Serambi Mekkah'?",
+            options: ["Gorontalo", "Banten", "Aceh", "Riau"],
+            answer: 2
+        },
+        {
+            question: "Reog adalah kesenian tradisional yang berasal dari...",
+            options: ["Ponorogo", "Banyuwangi", "Surakarta", "Yogyakarta"],
+            answer: 0
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let userAnswers = new Array(questionsDB.length).fill(null);
+
+    const startScreen = document.getElementById('start-screen');
+    const mainQuizContainer = document.getElementById('main-quiz-container');
+    const resultSection = document.getElementById('result-section');
+    
+    const questionTextEl = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const displayQuestionNum = document.getElementById('display-question-number');
+    const progressBar = document.getElementById('main-progress-bar');
+    const progressText = document.getElementById('progress-text');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const statusGrid = document.getElementById('questions-status-grid');
+
+    function startQuiz() {
+        startScreen.style.opacity = '0';
+        setTimeout(() => {
+            startScreen.classList.add('d-none');
+            mainQuizContainer.classList.remove('d-none');
+            renderStatusGrid();
+            loadQuestion(0);
+        }, 300);
+    }
+
+    function loadQuestion(index) {
+        const qCard = document.getElementById('quiz-content');
+        qCard.style.opacity = '0';
+        
+        setTimeout(() => {
+            currentQuestionIndex = index;
+            const data = questionsDB[index];
+
+            displayQuestionNum.textContent = `SOAL ${index + 1} / ${questionsDB.length}`;
+            questionTextEl.textContent = data.question;
+
+            optionsContainer.innerHTML = '';
+            data.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[index] === idx ? 'selected' : '';
+                const prefix = String.fromCharCode(65 + idx); 
+
+                const div = document.createElement('div');
+                div.className = `option-box ${isSelected}`;
+                div.onclick = () => selectOption(idx);
+                div.innerHTML = `
+                    <div class="option-prefix">${prefix}</div>
+                    <div class="fw-bold text-dark">${opt}</div>
+                `;
+                optionsContainer.appendChild(div);
+            });
+
+            prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+            nextBtn.innerHTML = index === questionsDB.length - 1 ? 'Selesai <i class="bi bi-check-circle ms-2"></i>' : 'Selanjutnya <i class="bi bi-arrow-right ms-2"></i>';
+            nextBtn.onclick = index === questionsDB.length - 1 ? finishQuiz : goNext;
+
+            updateProgress();
+            updateSidebarActive();
+            
+            qCard.style.opacity = '1';
+        }, 200);
+    }
+
+    function selectOption(optionIndex) {
+        userAnswers[currentQuestionIndex] = optionIndex;
+        const options = optionsContainer.children;
+        for (let i = 0; i < options.length; i++) {
+            options[i].classList.remove('selected');
+        }
+        options[optionIndex].classList.add('selected');
+        updateSidebarActive();
+    }
+
+    function goNext() {
+        if (currentQuestionIndex < questionsDB.length - 1) {
+            loadQuestion(currentQuestionIndex + 1);
+        }
+    }
+
+    function goBack() {
+        if (currentQuestionIndex > 0) {
+            loadQuestion(currentQuestionIndex - 1);
+        }
+    }
+
+    function jumpToQuestion(index) {
+        loadQuestion(index);
+    }
+
+    function updateProgress() {
+        const answeredCount = userAnswers.filter(ans => ans !== null).length;
+        const percent = Math.round((answeredCount / questionsDB.length) * 100);
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = `${percent}%`;
+    }
+
+    function renderStatusGrid() {
+        statusGrid.innerHTML = '';
+        questionsDB.forEach((_, i) => {
+            const div = document.createElement('div');
+            div.className = 'q-status-item';
+            div.textContent = i + 1;
+            div.onclick = () => jumpToQuestion(i);
+            div.id = `status-item-${i}`;
+            statusGrid.appendChild(div);
+        });
+    }
+
+    function updateSidebarActive() {
+        for (let i = 0; i < questionsDB.length; i++) {
+            const item = document.getElementById(`status-item-${i}`);
+            item.className = 'q-status-item';
+            if (userAnswers[i] !== null) {
+                item.classList.add('answered');
+            }
+            if (i === currentQuestionIndex) {
+                item.classList.add('active');
+            }
+        }
+    }
+
+    function finishQuiz() {
+        let score = 0;
+        let correctCount = 0;
+        
+        userAnswers.forEach((ans, idx) => {
+            if (ans === questionsDB[idx].answer) {
+                score += 10;
+                correctCount++;
+            }
+        });
+
+        document.getElementById('final-score').textContent = score;
+        document.getElementById('correct-count').textContent = correctCount;
+
+        mainQuizContainer.classList.add('d-none');
+        resultSection.classList.remove('d-none');
+    }
+</script>
+</body>
+</html>
